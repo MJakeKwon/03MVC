@@ -13,10 +13,16 @@ public class Product {
 	private int prodNo;
 	private Date regDate;
 	private String proTranCode;
+	private int tranNo;
 	
 	public Product(){
 	}
-	
+	public int getTranNo() {
+		return tranNo;
+	}
+	public void setTranNo(int tranNo) {
+		this.tranNo = tranNo;
+	}
 	public String getProTranCode() {
 		return proTranCode;
 	}

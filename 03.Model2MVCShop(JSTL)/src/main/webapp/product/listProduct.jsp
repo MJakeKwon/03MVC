@@ -140,7 +140,7 @@
 			<tr class="ct_list_pop">
 				<td align="center">${ i }</td>
 				<td></td>
-				<td align="left">
+				<td align="left"></td>
 				<c:choose>
 				<c:when test="${menu eq 'manage' }">
 				<a href="/updateProductView.do?prodNo=${product.prodNo}&menu=${param.menu }">${product.prodName}</a>
@@ -156,6 +156,35 @@
 				<td></td>
 				<td align="left">
 						판매중
+						
+						<c:if test="${sessionScope.user.role == 'admin'}">
+							<c:choose>
+								<c:when test="${prod.prodTranCode =='0' }">
+									<td align="left">판매중</td>
+								</c:when>
+								<c:when test="${prod.getProTranCode =='1' }">
+									<td align ="left"> 결제완료
+												<a href ="/updateTranCodeByProd.do?tranNo=${prod.getTranNo}&tranCode=2">배송하기</a>
+												</td>
+								</c:when>
+								<c:when test="${prod.getProTranCode =='2 }">
+									<td align ="left"> 배송중</td>
+								</c:when>
+								<c:when test="${prod.getProTranCode =='3 }">
+									<td align ="left"> 배송완료</td>
+								</c:when>
+							</c:choose>
+						</c:if>
+						<c:else>
+							 <c:if test="${prod.proTranCode == '0'}">
+						        <td align="left">판매중</td>
+						    </c:if>
+						    <c:if test="${prod.proTranCode != '0'}">
+						        <td align="left">재고없음</td>
+						    </c:if>
+						</c:else>
+						
+						
 						</td>
 				</tr>
 				

@@ -14,9 +14,9 @@ import com.model2.mvc.common.util.DBUtil;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.User;
 
-public class ProductDAO {
+public class ProductDao {
 	
-	public ProductDAO() {
+	public ProductDao() {
 	}
 	
 	public void insertProduct(Product prod) throws Exception{
@@ -104,17 +104,37 @@ public class ProductDAO {
 			
 			List<Product> list = new ArrayList<Product>();
 			
-			while(rs.next()){
-					Product prod = new Product();
-					prod.setProdNo(rs.getInt("prod_no"));
-					prod.setProdName(rs.getString("prod_name"));
-					prod.setProdDetail(rs.getString("prod_detail"));
-					prod.setManuDate(rs.getString("manufacture_day"));
-					prod.setPrice(rs.getInt("price"));
-					prod.setFileName(rs.getString("image_file"));
-					prod.setRegDate(rs.getDate("REG_DATE"));
+			if (totalCount > 0) {
+			    while(rs.next()) {
+			        Product product = new Product();
 
-					list.add(prod);
+			        // 데이터 VO에 set
+			        product.setProdNo(rs.getInt("PROD_NO"));
+			        product.setProdName(rs.getString("PROD_NAME"));
+			        product.setProdDetail(rs.getString("PROD_DETAIL"));
+			        product.setManuDate(rs.getString("MANUFACTURE_DAY"));
+			        product.setPrice(rs.getInt("PRICE"));
+			        product.setFileName(rs.getString("IMAGE_FILE"));
+			        product.setRegDate(rs.getDate("REG_DATE"));
+
+			        String sqlPurchase = "SELECT TRAN_STATUS_CODE, tran_no FROM transaction WHERE prod_no = ?";
+			        PreparedStatement stmt2 = con.prepareStatement(sqlPurchase);
+
+			        stmt2.setInt(1, product.getProdNo());
+			        ResultSet rs1 = stmt2.executeQuery();
+
+			        if (rs1.next()) {
+			            product.setProTranCode(rs1.getString("TRAN_STATUS_CODE").trim());
+			            product.setTranNo(rs1.getInt("tran_no"));
+			        } else {
+			            product.setProTranCode("0");
+			            product.setTranNo(0);
+			        }
+			        rs1.close(); // ResultSet 닫기
+			        stmt2.close(); // PreparedStatement 닫기
+
+			        list.add(product);
+			    }
 			}
 			
 			//==> currentPage 의 게시물 정보 갖는 List 저장
